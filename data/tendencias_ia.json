@@ -1,0 +1,62 @@
+[
+    {
+        "id": 1,
+        "profissao": "Engenheiro(a) de Prompt",
+        "salario_medio_brl": 12000,
+        "area_crescimento": "Inteligência Artificial Generativa",
+        "insights_ia": "A demanda por profissionais que otimizam a comunicação com modelos de IA (GPT, Gemini) disparou. É a ponte entre a necessidade do negócio e a capacidade da máquina, garantindo resultados precisos e éticos.",
+        "habilidades_chave": [
+            "Linguística e Semântica",
+            "Pensamento Crítico",
+            "Conhecimento em APIs de LLMs"
+        ]
+    },
+    {
+        "id": 2,
+        "profissao": "Especialista em Ética de IA",
+        "salario_medio_brl": 15000,
+        "area_crescimento": "Regulamentação e Conformidade",
+        "insights_ia": "Com a crescente regulamentação global, este profissional garante que os sistemas de Deep Learning sejam justos, transparentes e livres de vieses, focando na conformidade e responsabilidade algorítmica.",
+        "habilidades_chave": [
+            "Legislação (LGPD, IA Acts)",
+            "Auditoria de Algoritmos",
+            "Filosofia e Ética"
+        ]
+    },
+    {
+        "id": 3,
+        "profissao": "Arquiteto(a) de Soluções IoT & Edge Computing",
+        "salario_medio_brl": 18000,
+        "area_crescimento": "Internet of Things (IoT) e Computação de Borda",
+        "insights_ia": "Foco na arquitetura de sistemas que processam dados em tempo real em dispositivos (Edge), reduzindo latência e otimizando o fluxo de dados para as plataformas de Deep Learning (IoB/IoT).",
+        "habilidades_chave": [
+            "Redes e Protocolos IoT",
+            "Cloud Computing (AWS/Azure/GCP)",
+            "Segurança de Sistemas Embarcados"
+        ]
+    },
+    {
+        "id": 4,
+        "profissao": "Cientista de Dados em Sustentabilidade (ESG)",
+        "salario_medio_brl": 11000,
+        "area_crescimento": "Sustentabilidade e Data Science",
+        "insights_ia": "Usa Machine Learning para analisar dados ambientais (clima, consumo de recursos), auxiliando empresas a cumprir metas de ESG (Environmental, Social, and Governance) de forma mensurável.",
+        "habilidades_chave": [
+            "Modelagem Preditiva",
+            "Análise de Séries Temporais",
+            "Conhecimento em Métricas ESG"
+        ]
+    },
+    {
+        "id": 5,
+        "profissao": "Desenvolvedor(a) Full-Stack de Metaverso/VR",
+        "salario_medio_brl": 14000,
+        "area_crescimento": "Realidade Virtual/Aumentada",
+        "insights_ia": "Desenvolve a experiência imersiva completa. A integração com Deep Learning (para rastreamento de movimento ou geração de conteúdo) é um diferencial crucial neste mercado em crescimento.",
+        "habilidades_chave": [
+            "Unity/Unreal Engine",
+            "Desenvolvimento 3D (Blender/Maya)",
+            "Web APIs e Banco de Dados"
+        ]
+    }
+]
