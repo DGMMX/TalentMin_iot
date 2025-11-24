@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.cors import CORSMiddleware # Importar CORS
 from pydantic import BaseModel
 import numpy as np
 import json # Para ler o JSON
@@ -10,7 +10,6 @@ import os # Para manipular caminhos
 app = FastAPI()
 
 # Permite acesso do Frontend (Desenvolvimento Web) à API
-# CORSMiddleware (no singular) foi corrigido
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"], # Permite qualquer origem (pode ser restrito depois)
@@ -36,15 +35,9 @@ def get_ia_insights():
     """
     Serve o JSON de insights de empregos, simulando o resultado de uma
     API de IA Generativa (Geração de Texto).
-    O caminho para o arquivo JSON foi ajustado para ser mais robusto, 
-    assumindo a estrutura: Raiz/data/tendencias_ia.json
     """
-    
-    # GARANTE O CAMINHO CORRETO: 
-    # os.path.dirname(os.path.abspath(__file__)) => Pasta backend
-    # '..' => Volta para a pasta raiz (TalentMind)
-    # 'data', 'tendencias_ia.json' => Entra na pasta data e pega o arquivo
-    json_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'data', 'tendencias_ia.json')
+    # Define o caminho para o arquivo JSON (assumindo a estrutura de pastas: data/tendencias_ia.json)
+    json_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'tendencias_ia.json')
     
     try:
         with open(json_path, 'r', encoding='utf-8') as f:
@@ -56,10 +49,9 @@ def get_ia_insights():
             "data": dados_ia
         }
     except FileNotFoundError:
-        # Retorna a mensagem de erro que você estava vendo no navegador
-        return {"status": "error", "message": "Arquivo de dados da IA não encontrado! Verifique a pasta 'data'."}
+        return {"status": "error", "message": "Arquivo de dados da IA não encontrado! Verifique o caminho."}, 404
     except Exception as e:
-        return {"status": "error", "message": str(e)}
+        return {"status": "error", "message": str(e)}, 500
 
 
 # --- 3. Endpoint: /predict_future_job (Seu modelo de Classificação) ---
