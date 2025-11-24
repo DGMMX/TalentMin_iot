@@ -1,86 +1,103 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware # Importar CORS
+from fastapi import FastAPI, HTTPException, Body
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import numpy as np
-import json # Para ler o JSON
-import os # Para manipular caminhos
-# from transformers import pipeline # Mantenha se quiser usar a Classificação
+import json
+import os
+import random
+from pathlib import Path # Importação crucial para tratamento de caminhos
 
-# --- Configuração do FastAPI ---
-app = FastAPI()
+# Imports para servir arquivos estáticos (HTML/CSS/JS)
+from fastapi.staticfiles import StaticFiles
 
-# Permite acesso do Frontend (Desenvolvimento Web) à API
+# Classe base para o modelo Pydantic do prompt
+class PromptModel(BaseModel):
+    text: str
+
+# --- CONFIGURAÇÃO DE DIRETÓRIOS ---
+# Definimos o caminho da pasta raiz do projeto usando pathlib para maior robustez
+# A raiz é um nível acima do 'backend' (TalentMin_iot/)
+# .resolve().parent.parent move-se de 'main.py' -> 'backend' -> 'TalentMin_iot/'
+ROOT_DIR = Path(__file__).resolve().parent.parent
+
+# Agora, definimos os caminhos usando a raiz do projeto.
+FRONTEND_DIR = ROOT_DIR / 'frontend'
+DATA_FILE = ROOT_DIR / 'data' / 'tendencias_ia.json'
+
+# --- CONFIGURAÇÃO DE ROTEAMENTO ESTÁTICO DE PÁGINA ÚNICA ---
+# 1. Cria um objeto StaticFiles que sabe como servir a pasta 'frontend'
+#    'html=True' é CRUCIAL: ele força o servidor a servir o index.html
+#    automaticamente quando o caminho é a raiz da montagem (/).
+static_app = StaticFiles(directory=FRONTEND_DIR, html=True)
+
+# 2. Inicializa o FastAPI 
+# Desabilita docs_url na raiz para evitar conflito com o index.html.
+app = FastAPI(docs_url="/docs", redoc_url=None) 
+
+# --- 1. MIDDLEWARE CORS ---
+# Permite acesso de qualquer origem, necessário para o front-end acessar a API
+origins = ["*"] 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Permite qualquer origem (pode ser restrito depois)
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# --- Modelo de IA (Você pode usar este ou o seu modelo de Classificação) ---
-# classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli")
+# --- 2. SERVIR ARQUIVOS ESTÁTICOS NA RAIZ (Substitui @app.get("/")) ---
 
-class Prompt(BaseModel):
-    text: str
+# Monta o StaticApp na URL raiz ( / )
+# Esta montagem tem a mais alta prioridade e deve exibir o index.html.
+app.mount("/", static_app, name="dashboard_files")
 
-# --- 1. Endpoint: / (Raiz) ---
-@app.get("/")
-def read_root():
-    return {"status": "FutureJobsAI API online"}
+# --- 3. ROTAS DA API DE DADOS ---
 
-# --- 2. Endpoint: /api/tendencias (Integração com IA Generativa) ---
-@app.get("/api/tendencias")
-def get_ia_insights():
-    """
-    Serve o JSON de insights de empregos, simulando o resultado de uma
-    API de IA Generativa (Geração de Texto).
-    """
-    # Define o caminho para o arquivo JSON (assumindo a estrutura de pastas: data/tendencias_ia.json)
-    json_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'tendencias_ia.json')
-    
+def load_ai_data():
+    """Carrega os dados de tendências a partir do arquivo JSON."""
     try:
-        with open(json_path, 'r', encoding='utf-8') as f:
-            dados_ia = json.load(f)
-        
+        # Usamos Path().open() para garantir a abertura correta do arquivo
+        with DATA_FILE.open('r', encoding='utf-8') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        print(f"ERRO: Arquivo de dados não encontrado em {DATA_FILE}")
+        raise HTTPException(status_code=404, detail="Arquivo de dados da IA não encontrado.")
+    except json.JSONDecodeError:
+        print(f"ERRO: Erro ao decodificar JSON em {DATA_FILE}")
+        raise HTTPException(status_code=500, detail="Erro de formatação no arquivo JSON de dados.")
+
+
+@app.get("/api/tendencias")
+def get_tendencias():
+    """Endpoint que o dashboard usa para obter os dados de tendências."""
+    try:
+        data = load_ai_data()
         return {
             "status": "success",
             "source": "AI Generativa (Simulada)",
-            "data": dados_ia
+            "data": data
         }
-    except FileNotFoundError:
-        return {"status": "error", "message": "Arquivo de dados da IA não encontrado! Verifique o caminho."}, 404
-    except Exception as e:
-        return {"status": "error", "message": str(e)}, 500
+    except HTTPException as e:
+        return {"status": "error", "message": e.detail}
 
 
-# --- 3. Endpoint: /predict_future_job (Seu modelo de Classificação) ---
 @app.post("/predict-future-job/")
-def predict_future_job(prompt: Prompt):
-    # EXEMPLO DE CLASSIFICAÇÃO: 
-    # Mantenha esta parte para cumprir o requisito de Visão Computacional / Classificação
-    labels = ["Engenharia de IA", "Cibersegurança", "Robótica", "Bioeconomia", "Análise de Dados"]
+def predict_future_job(prompt: PromptModel):
+    """Endpoint para classificação da IA (simulado ou real)."""
     
-    # Se você não for usar o modelo real, simule a resposta
-    if "dados" in prompt.text.lower():
-        prediction = "Análise de Dados"
-    elif "seguranca" in prompt.text.lower():
-        prediction = "Cibersegurança"
-    else:
-        prediction = "Engenharia de IA"
-
-    # Se quiser usar o modelo real, descomente e ajuste:
-    # result = classifier(prompt.text, labels)
-    # prediction = result['labels'][0]
+    # Simulação de resposta da IA
+    labels_simulados = [
+        "Internet of Things (IoT) & Edge Computing", 
+        "Sustentabilidade e Data Science (ESG)", 
+        "Inteligência Artificial Generativa", 
+        "Especialista em Ética de IA"
+    ]
+    
+    prediction = random.choice(labels_simulados)
+    confidence_score = random.uniform(0.75, 0.99)
+    confidence = f"{confidence_score:.2f}%"
     
     return {
         "input_prompt": prompt.text,
         "prediction": prediction,
-        "confidence": "95% (Simulado)" # Adicione confiança para parecer mais profissional
+        "confidence": confidence
     }
-
-# --- REMOVIDO: Comentei ou removi o endpoint /salary para evitar erros de API externa. ---
-# @app.get("/salary/{area}")
-# def get_salary(area: str):
-#     # ... código removido ...
-#     pass # O Dashboard usará o JSON de /api/tendencias
