@@ -83,11 +83,6 @@ uvicorn main:app --reload
 
 O servidor estará acessível em http://127.0.0.1:8000. Mantenha este terminal aberto e rodando.
 
-3. Acessar o Frontend (Dashboard)
-
-Vá até a pasta frontend/.
-
-Dê um clique duplo no arquivo index.html para abri-lo no seu navegador.
 
 
 
