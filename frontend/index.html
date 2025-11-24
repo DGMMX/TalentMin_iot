@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Tendências de Empregos do Futuro (IA)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        .header-ia {
+            background-color: #3f51b5;
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header-ia text-center">
+        <h1>🤖 Dashboard de Tendências de Empregos do Futuro</h1>
+        <p>Análise de mercado e previsão de carreiras emergentes com Deep Learning</p>
+    </header>
+
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-12">
+                <h2 class="mb-3">💸 Salários Médios de Profissões Emergentes (Insights da IA)</h2>
+                <div class="card p-3 shadow-sm">
+                    <canvas id="salariesChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-5">
+            <div class="col-md-6">
+                <h2 class="mb-3">🔍 Previsão de Área de Foco (Classificação de IA)</h2>
+                <div class="card p-4 shadow-sm">
+                    <p>Descreva um novo projeto ou tendência para a IA classificar a área de foco mais promissora:</p>
+                    <textarea id="promptInput" class="form-control mb-3" rows="3" placeholder="Ex: Desenvolver um sistema de monitoramento de saúde de plantações via drones e visão computacional."></textarea>
+                    <button class="btn btn-primary" onclick="predictJob()">Classificar Tendência</button>
+                    <div id="predictionResult" class="mt-3 p-3 bg-light rounded" style="display: none;">
+                        <strong>Previsão da IA:</strong> <span id="ia_prediction"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <h2 class="mb-3">✨ Detalhes das Tendências (Geração de Texto)</h2>
+                <ul class="list-group" id="trendsList">
+                    <li class="list-group-item text-muted">Carregando insights da API...</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center py-3 bg-light mt-4">
+        <p>Desenvolvido para DISRUPTIVE ARCHITECTURES: IOT, IOB & GENERATIVE IA (FIAP)</p>
+    </footer>
+
+    <script>
+        // *** IMPORTANTE: AJUSTE ESTA URL SE SUA API ESTIVER EM OUTRO LUGAR ***
+        const API_BASE_URL = 'http://127.0.0.1:8000'; // FastAPI roda por padrão na porta 8000
+
+        // ----------------------------------------------------
+        // FUNÇÃO 1: Carregar Dados da IA e Gerar Gráfico e Lista
+        // ----------------------------------------------------
+        async function loadDataAndRender() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/tendencias`);
+                const jsonResponse = await response.json();
+
+                if (jsonResponse.status === 'success') {
+                    const data = jsonResponse.data;
+                    
+                    // Preparar dados para o Chart.js
+                    const professions = data.map(item => item.profissao);
+                    const salaries = data.map(item => item.salario_medio_brl);
+
+                    // Renderizar Gráfico de Salários
+                    renderSalariesChart(professions, salaries);
+
+                    // Renderizar Lista de Tendências (Texto da IA)
+                    renderTrendsList(data);
+
+                } else {
+                    document.getElementById('trendsList').innerHTML = '<li class="list-group-item text-danger">Erro ao carregar dados da IA.</li>';
+                }
+
+            } catch (error) {
+                console.error("Erro ao conectar com a API:", error);
+                alert("Erro ao conectar com a API. Verifique se o FastAPI está rodando em " + API_BASE_URL);
+            }
+        }
+
+        function renderSalariesChart(labels, data) {
+            const ctx = document.getElementById('salariesChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Salário Médio Estimado (BRL)',
+                        data: data,
+                        backgroundColor: '#4CAF50',
+                        borderColor: '#388E3C',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+        
+        function renderTrendsList(data) {
+            const list = document.getElementById('trendsList');
+            list.innerHTML = ''; // Limpa o "Carregando"
+            data.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item';
+                li.innerHTML = `
+                    <h5>${item.profissao} (${item.area_crescimento})</h5>
+                    <p class="mb-1">${item.insights_ia}</p>
+                    <small>Habilidades Chave: <strong>${item.habilidades_chave.join(', ')}</strong></small>
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        // ----------------------------------------------------
+        // FUNÇÃO 2: Previsão da IA (Chama o endpoint POST)
+        // ----------------------------------------------------
+        async function predictJob() {
+            const prompt = document.getElementById('promptInput').value;
+            const resultDiv = document.getElementById('predictionResult');
+            const iaPredictionSpan = document.getElementById('ia_prediction');
+            
+            if (prompt.trim() === "") {
+                iaPredictionSpan.textContent = "Por favor, insira uma descrição.";
+                resultDiv.style.display = 'block';
+                return;
+            }
+
+            iaPredictionSpan.textContent = "Classificando...";
+            resultDiv.style.display = 'block';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/predict-future-job/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ text: prompt })
+                });
+
+                const jsonResponse = await response.json();
+                
+                iaPredictionSpan.innerHTML = `<strong>${jsonResponse.prediction}</strong> (Confiança: ${jsonResponse.confidence})`;
+
+            } catch (error) {
+                iaPredictionSpan.textContent = "Erro na chamada da API de Previsão.";
+                console.error("Erro na previsão:", error);
+            }
+        }
+
+        // Carrega os dados assim que a página termina de carregar
+        window.onload = loadDataAndRender;
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+/* frontend/style.css */
+
+/* Define uma fonte mais limpa para todo o corpo */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f6;
+}
+
+/* Estilo para o cabeçalho principal da IA */
+.header-ia {
+    background-color: #007bff; /* Azul primário do Bootstrap */
+    color: white;
+    padding: 30px 0;
+    margin-bottom: 40px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Estiliza os cards (caixas de conteúdo) */
+.card {
+    border: none;
+    border-radius: 10px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+}
+
+/* Estilo para os títulos das seções */
+h2 {
+    color: #333;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 5px;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+/* Estilo para a lista de tendências (insights da IA) */
+.list-group-item {
+    border-left: 5px solid #007bff;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.list-group-item h5 {
+    color: #007bff;
+    font-weight: bold;
+}
+
+/* Estilo para o resultado da previsão */
+#predictionResult {
+    background-color: #e9ecef !important;
+    border-radius: 8px;
+    border: 1px dashed #ced4da;
+}
