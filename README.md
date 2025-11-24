@@ -88,6 +88,9 @@ site ta no html: http://127.0.0.1:5500/frontend/index.html
 
 deploy: https://talentmin-iot.onrender.com/api/tendencias
 
+## Video
+https://youtu.be/JD5_Ymyt5yA
+
 
 
 
