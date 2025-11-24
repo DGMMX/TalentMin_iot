@@ -83,6 +83,9 @@ uvicorn main:app --reload
 
 O servidor estará acessível em http://127.0.0.1:8000. Mantenha este terminal aberto e rodando.
 
+site ta no html: http://127.0.0.1:5500/frontend/index.html
+
+
 
 
 
