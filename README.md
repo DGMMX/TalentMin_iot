@@ -86,6 +86,8 @@ O servidor estará acessível em http://127.0.0.1:8000. Mantenha este terminal a
 site ta no html: http://127.0.0.1:5500/frontend/index.html
 
 
+deploy: https://talentmin-iot.onrender.com/api/tendencias
+
 
 
 
