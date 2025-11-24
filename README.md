@@ -1,8 +1,6 @@
-# 🚀 FutureJobsAI – Dashboard de Tendências de Empregos do Futuro
+## 🤖 TalentMind: Dashboard de Tendências de Empregos do Futuro (FIAP)
 
-FutureJobsAI é uma aplicação que integra **IA + APIs reais + visualização de dados** para mostrar tendências de carreiras emergentes, crescimento de áreas tecnológicas, médias salariais e previsão de profissões do futuro utilizando modelos de Deep Learning.
-
-O projeto foi desenvolvido como parte da disciplina **Disruptive Architectures: IoT, IOB & Generative IA** (FIAP).
+Este projeto implementa uma solução de Deep Learning integrada com outras disciplinas (Desenvolvimento Web e Mobile) para prever e apresentar tendências de empregos futuros, com foco em IoT, IoB (Internet of Behaviors) e IA Generativa.
 
 ---
 
@@ -12,30 +10,84 @@ O projeto foi desenvolvido como parte da disciplina **Disruptive Architectures: 
 - Giovanni de Souza Lima – RM556536 | Turma 2TDSPH
 - Vitor Tadeu Soares de Sousa – RM559105 | Turma 2TDSPH
 
+## 🎯 Requisitos Técnicos Atendidos
 
-## 🧠 **Funcionalidades Principais**
+O projeto utiliza uma arquitetura integrada, demonstrando o uso de dois componentes de IA:
 
-### 🔍 1. Coleta de Dados Reais  
-O sistema consulta dados usando APIs públicas como:  
-- **BrasilAPI** → informações profissionais e códigos CBO  
-- **Datasets públicos** (via Kaggle / GitHub)
+API de IA Generativa (Simulada): Geração de insights de texto e dados salariais estruturados sobre as profissões emergentes (servido via arquivo JSON).
 
-### 📊 2. Dashboard Completo (Streamlit)  
-O painel interativo inclui:  
-- Gráficos de crescimento de áreas tech  
-- Visualização de tendências  
-- Exibição de dados reais  
-- Busca de áreas e cargos pelo CBO  
-- Interface intuitiva e navegável
+API de Visão Computacional (Simulada): Classificação de texto que simula a identificação de áreas de foco (ex: "Análise de Dados", "Cibersegurança") a partir de um prompt do usuário.
 
-### 🤖 3. IA para Predição de Profissões do Futuro  
-O backend usa **HuggingFace Transformers** para analisar textos e prever carreiras emergentes usando *zero-shot classification*.
+## 🏗️ Arquitetura do Sistema
 
-Exemplo:  
-> “Aumento de automação, robótica e agentes inteligentes”  
-➡️ IA prevê: **Engenharia de IA**, **Robótica** ou **Cibersegurança**
+A solução segue um modelo de arquitetura de microsserviços simples, onde o Frontend e o Backend se comunicam via REST API, garantindo a separação de responsabilidades.
 
----
+Componente
 
-## 🏗 **Arquitetura do Projeto**
+Tecnologia
+
+Função
+
+Backend (API)
+
+Python (FastAPI)
+
+Expõe os endpoints de /api/tendencias (dados da IA Generativa) e /predict-future-job (Classificação).
+
+Frontend (Dashboard)
+
+HTML, JavaScript, Bootstrap, Chart.js
+
+Interface funcional que consome os dados do Backend, apresentando gráficos e a interação com o modelo de IA.
+
+## 📁 Estrutura de Pastas
+
+### A estrutura do projeto é organizada para facilitar a execução:
+
+TalentMind/
+├── backend/                  # Servidor Python e API
+│   ├── main.py               # Lógica do FastAPI e Endpoints da IA
+│   └── requirements.txt      # Dependências Python (fastapi, uvicorn, etc.)
+├── data/                     # Arquivos de dados
+│   └── tendencias_ia.json    # Insights de empregos gerados pela IA (dados brutos)
+├── frontend/                 # Interface Web (Dashboard)
+│   ├── index.html            # Estrutura do Dashboard e JavaScript de integração
+│   └── style.css             # Estilização CSS
+└── README.md                 # Este documento
+
+
+## 🚀 Como Executar o Projeto
+
+Para rodar a aplicação, siga os passos abaixo no seu terminal.
+
+1. Preparação do Ambiente Python
+
+Recomendamos o uso de um ambiente virtual (.venv) para isolar as dependências.
+
+Instale as dependências:
+```
+pip install -r backend/requirements.txt
+```
+
+2. Iniciar o Servidor Backend (API)
+
+Navegue até a pasta que contém o arquivo main.py:
+```
+cd backend
+```
+
+Inicie o servidor Uvicorn:
+```
+uvicorn main:app --reload
+```
+
+O servidor estará acessível em http://127.0.0.1:8000. Mantenha este terminal aberto e rodando.
+
+3. Acessar o Frontend (Dashboard)
+
+Vá até a pasta frontend/.
+
+Dê um clique duplo no arquivo index.html para abri-lo no seu navegador.
+
+
 
