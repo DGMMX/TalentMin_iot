@@ -11,7 +11,7 @@ app = FastAPI()
 
 # Permite acesso do Frontend (Desenvolvimento Web) à API
 app.add_middleware(
-    CORSMiddlewares,
+    CORSMiddleware,
     allow_origins=["*"], # Permite qualquer origem (pode ser restrito depois)
     allow_credentials=True,
     allow_methods=["*"],
